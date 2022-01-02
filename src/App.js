@@ -4,6 +4,7 @@ import ContactList from "./components/ContactList/ContactList";
 import "./App.css";
 
 export default function App() {
+  console.log("Hi %cthere %cguys", "color: red", "color: green");
   return (
     <div className="container">
       <ContactForm />

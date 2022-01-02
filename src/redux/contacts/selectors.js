@@ -4,7 +4,6 @@ export const getFilter = (state) => state.filter;
 export const getFilteredElems = (state) => {
   const contacts = getContacts(state);
   const filter = getFilter(state);
-  // console.log("filter", filter);
   const normalizedFilter = filter.toLowerCase();
 
   return contacts.filter((contact) =>

@@ -1,42 +1,18 @@
-import { useState } from "react";
-import { addContact } from "../../redux/contacts/actions";
-import { useSelector, useDispatch } from "react-redux";
-import { getContacts } from "../../redux/contacts/selectors";
+import { useCreateContactMutation } from "../../redux/contacts/slice";
+import Loader from "react-loader-spinner";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 export default function ContactForm() {
-  const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const [createContact, { isLoading }] = useCreateContactMutation();
 
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    switch (name) {
-      case "name":
-        setName(value);
-        break;
-
-      case "phoneNumber":
-        setPhoneNumber(value);
-        break;
-      default:
-        return;
-    }
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    contacts.map((contact) => contact.name).includes(name)
-      ? alert(`${name} is already in contacts`)
-      : dispatch(addContact({ name, phoneNumber }));
-    clearForm();
-  };
-
-  const clearForm = () => {
-    setName("");
-    setPhoneNumber("");
+    createContact({
+      name: e.currentTarget.elements.name.value,
+      number: e.currentTarget.elements.number.value,
+    });
+    e.currentTarget.reset();
   };
 
   return (
@@ -47,7 +23,6 @@ export default function ContactForm() {
           Name
           <input
             type="text"
-            onChange={handleChange}
             name="name"
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
@@ -59,15 +34,26 @@ export default function ContactForm() {
           Number
           <input
             type="tel"
-            onChange={handleChange}
-            name="phoneNumber"
+            name="number"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
             required
           />
         </label>
 
-        <button type="submit"> Add Contact</button>
+        <button type="submit">
+          {isLoading ? (
+            <Loader
+              type="Puff"
+              color="#00BFFF"
+              height={100}
+              width={100}
+              timeout={3000} //3 secs
+            />
+          ) : (
+            "Add contact"
+          )}
+        </button>
       </form>
     </>
   );

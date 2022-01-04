@@ -1,27 +1,33 @@
 import React from "react";
-import { delContact } from "../../redux/contacts/actions";
-import { useDispatch, useSelector } from "react-redux";
-import { getFilteredElems } from "../../redux/contacts/selectors";
+import Loader from "react-loader-spinner";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
-export default function ContactList() {
-  const dispatch = useDispatch();
-  const contacts = useSelector(getFilteredElems);
-
+export default function ContactList({ data, onDelete, deleting }) {
   return (
     <>
       <h1>Contacts</h1>
       <ul>
-        {contacts.map(({ id, name, phoneNumber }) => (
+        {data.map(({ id, name, number }) => (
           <li key={id}>
-            <p> {`${name}: ${phoneNumber}`}</p>
+            <p> {`${name}: ${number}`}</p>
 
             <button
               id={id}
-              onClick={() => dispatch(delContact(id))}
+              onClick={() => onDelete(id)}
               type="button"
               className="btn"
             >
-              Delete
+              {deleting ? (
+                <Loader
+                  type="Puff"
+                  color="#00BFFF"
+                  height={100}
+                  width={100}
+                  timeout={3000} //3 secs
+                />
+              ) : (
+                "Delete"
+              )}
             </button>
           </li>
         ))}
